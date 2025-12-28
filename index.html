@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Alert</title>
+    <style>
+        /* বেসিক সেটআপ */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: #0F0; /* হ্যাকার গ্রিন কালার */
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* ক্যানভাস (ম্যাট্রিক্স ইফেক্টের জন্য) */
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1; /* টেক্সটের পিছনে থাকবে */
+        }
+
+        /* মেইন কন্টেইনার */
+        .container {
+            border: 2px solid #0F0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 20px #0F0;
+            max-width: 90%;
+            width: 600px;
+            position: relative;
+        }
+
+        /* শিরোনাম স্টাইল */
+        h1 {
+            font-size: 2em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: red; /* সতর্কবার্তা হিসেবে লাল */
+            text-shadow: 0 0 5px red;
+            animation: glitch 1s linear infinite;
+        }
+
+        /* মেসেজ বডি */
+        .message {
+            font-size: 1.2em;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* যোগাযোগ সেকশন */
+        .contact {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #0F0;
+            border-top: 1px dashed #0F0;
+            padding-top: 10px;
+        }
+
+        /* ডেভেলপার ক্রেডিট */
+        .footer {
+            margin-top: 15px;
+            font-size: 0.8em;
+            color: yellow;
+            opacity: 0.8;
+        }
+
+        /* গ্লিচ অ্যানিমেশন */
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px,0) skew(0deg); }
+            4%, 60% { transform: translate(-2px,0) skew(0deg); }
+            62% { transform: translate(0,0) skew(5deg); }
+        }
+
+        /* টাইপিং কার্সর */
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            background-color: #0F0;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="container">
+        <h1>⚠ OPERATION SUCCESSFUL ⚠</h1>
+        
+        <div class="message">
+            <span id="typewriter"></span><span class="cursor">_</span>
+        </div>
+
+        <div class="contact">
+            WEBSITE DEVELOPMENT SERVICE<br>
+            TELEGRAM: <span style="color: cyan;">@annonymous707</span>
+        </div>
+
+        <div class="footer">
+            Developed By TEAM SP
+        </div>
+    </div>
+
+    <script>
+        // ম্যাট্রিক্স রেইন ইফেক্ট সেটআপ
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポ1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const alphabet = katakana.split('');
+
+        const fontSize = 16;
+        const columns = canvas.width/fontSize;
+
+        const drops = [];
+        for(let x = 0; x < columns; x++)
+            drops[x] = 1;
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px arial';
+
+            for(let i = 0; i < drops.length; i++)
+            {
+                const text = alphabet[Math.floor(Math.random()*alphabet.length)];
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+                    drops[i] = 0;
+
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 33);
+
+        // টেক্সট টাইপিং ইফেক্ট
+        const textToType = "UNITY BUSSID GAMING গ্রুপটি বন্ধ করে দেওয়া হয়েছে।";
+        const typeWriterElement = document.getElementById('typewriter');
+        let i = 0;
+
+        function typeWriter() {
+            if (i < textToType.length) {
+                typeWriterElement.innerHTML += textToType.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100); // টাইপিং স্পিড
+            }
+        }
+        
+        // পেজ লোড হলে টাইপিং শুরু হবে
+        window.onload = typeWriter;
+
+        // উইন্ডো রিসাইজ হলে ক্যানভাস ঠিক করা
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+
+</body>
+</html>
